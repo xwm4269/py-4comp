@@ -170,24 +170,34 @@ class App():
             Label(statistic_frame, text=i, font=('Arial 12') ).pack(anchor=W, pady=[0,10])
 
     def add_request_screen(self):
-        self.clear_main()
+        window = Toplevel()
+        window.title("заявка")
+        window.geometry("1200x700")
+        window.grab_set() 
 
-        add_request_body = Frame(self.body_frame)
+        eq_box, ty_box = mydb.equipment_and_type_serch()
+        
+
+        add_request_body = Frame(window)
         add_request_body.pack(pady=50)
 
         titles = ["номер","клиент", "дата", "оборудование", "тип не исправности", "описание:" ]
 
         for count, title in enumerate(titles):
             Label(add_request_body, text=title, font=('Arial 12')).grid(row=count, column=0, sticky=W, pady=[0,10])
-
         
-        
-        id = Label(add_request_body, text=f"0000", font=('Arial 12')).grid(row=count, column=1, sticky=E, pady=[0,10])
-        user = Label(add_request_body, text=self.user_name, font=('Arial 12')).grid(row=count, column=1, sticky=E, pady=[0,10])
-        data = Label(add_request_body, text=today, font=('Arial 12')).grid(row=count, column=1, sticky=E, pady=[0,10])
-        eq = ttk.Combobox(add_request_body, font=('Arial 12')).grid(row=3, column=1, sticky=E, pady=[0,10])
-        ty = ttk.Combobox(add_request_body, font=('Arial 12')).grid(row=4, column=1, sticky=E, pady=[0,10])
+        id = Label(add_request_body, text=f"0000", font=('Arial 12')).grid(row=0, column=1, sticky=E, pady=[0,10])
+        user = Label(add_request_body, text=self.user_name, font=('Arial 12')).grid(row=1, column=1, sticky=E, pady=[0,10])
+        data = Label(add_request_body, text=today, font=('Arial 12')).grid(row=2, column=1, sticky=E, pady=[0,10])
+        eq = ttk.Combobox(add_request_body, values=eq_box, font=('Arial 12'), state="readonly")
+        eq.grid(row=3, column=1, sticky=E, pady=[0,10])
+        ty = ttk.Combobox(add_request_body, values=ty_box, font=('Arial 12'), state="readonly")
+        ty.grid(row=4, column=1, sticky=E, pady=[0,10])
         op = Text(add_request_body, font=('Arial 14'), height=10).grid(row=6, column=0, columnspan=2, sticky=E, pady=[0,10])
+        Button(add_request_body, text='далее', font=('Arial 14'), width=16, height=3).grid(row=7, column=0)
+        Button(add_request_body, text='назад', font=('Arial 14'), width=16, height=3, command=window.destroy).grid(row=7, column=1)
+
+        print(eq.get())
         
         
 

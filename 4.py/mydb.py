@@ -88,6 +88,13 @@ def search_admin_for_login(login, password):
     else:
         return None
     
+def equipment_and_type_serch():
+    equipment = cursor.execute(f'SELECT name from Equipment').fetchall()
+    type = cursor.execute(f'SELECT name from Type').fetchall()
+
+    return equipment, type
+
+    
 
     
 
