@@ -161,7 +161,7 @@ class App():
         request_body_frame.pack(pady=100)
         if status == 'user':
             Button(request_body_frame, text='Подать заявку', font=('Arial 14'), width=20, height=2, command=self.add_request_screen).grid(row=0, column=0)
-        Button(request_body_frame, text='Мои заявки', font=('Arial 14'), width=20, height=2).grid(row=1, column=0, pady=[20,0])
+        Button(request_body_frame, text='Мои заявки', font=('Arial 14'), width=20, height=2, command=self.my_request).grid(row=1, column=0, pady=[20,0])
 
         statistic_frame = Frame(self.body_frame)
         statistic_frame.pack(pady=[250, 20])
@@ -174,30 +174,45 @@ class App():
         window.title("заявка")
         window.geometry("1200x700")
         window.grab_set() 
+        self.window = window
 
         eq_box, ty_box = mydb.equipment_and_type_serch()
         
 
-        add_request_body = Frame(window)
-        add_request_body.pack(pady=50)
+        self.add_request_body = Frame(window)
+        self.add_request_body.pack(pady=50)
 
-        titles = ["номер","клиент", "дата", "оборудование", "тип не исправности", "описание:" ]
+        titles = ["клиент", "дата", "оборудование", "тип не исправности", "описание:" ]
 
         for count, title in enumerate(titles):
-            Label(add_request_body, text=title, font=('Arial 12')).grid(row=count, column=0, sticky=W, pady=[0,10])
+            Label(self.add_request_body, text=title, font=('Arial 12')).grid(row=count, column=0, sticky=W, pady=[0,10])
         
-        id = Label(add_request_body, text=f"0000", font=('Arial 12')).grid(row=0, column=1, sticky=E, pady=[0,10])
-        user = Label(add_request_body, text=self.user_name, font=('Arial 12')).grid(row=1, column=1, sticky=E, pady=[0,10])
-        data = Label(add_request_body, text=today, font=('Arial 12')).grid(row=2, column=1, sticky=E, pady=[0,10])
-        eq = ttk.Combobox(add_request_body, values=eq_box, font=('Arial 12'), state="readonly")
-        eq.grid(row=3, column=1, sticky=E, pady=[0,10])
-        ty = ttk.Combobox(add_request_body, values=ty_box, font=('Arial 12'), state="readonly")
-        ty.grid(row=4, column=1, sticky=E, pady=[0,10])
-        op = Text(add_request_body, font=('Arial 14'), height=10).grid(row=6, column=0, columnspan=2, sticky=E, pady=[0,10])
-        Button(add_request_body, text='далее', font=('Arial 14'), width=16, height=3).grid(row=7, column=0)
-        Button(add_request_body, text='назад', font=('Arial 14'), width=16, height=3, command=window.destroy).grid(row=7, column=1)
+        Label(self.add_request_body, name='user_name', text=self.user_name, font=('Arial 12')).grid(row=0, column=1, sticky=E, pady=[0,10])
+        Label(self.add_request_body, name='data_name', text=today, font=('Arial 12')).grid(row=1, column=1, sticky=E, pady=[0,10])
+        eq = ttk.Combobox(self.add_request_body, name='eq_name', values=eq_box, font=('Arial 12'), state="readonly")
+        eq.grid(row=2, column=1, sticky=E, pady=[0,10])
+        ty = ttk.Combobox(self.add_request_body, name='ty_name', values=ty_box, font=('Arial 12'), state="readonly")
+        ty.grid(row=3, column=1, sticky=E, pady=[0,10])
+        Text(self.add_request_body, name='op_name', font=('Arial 14'), height=10).grid(row=5, column=0, columnspan=2, sticky=E, pady=[0,10])
+        Button(self.add_request_body, text='далее', font=('Arial 14'), width=16, height=3, command=self.enter_new_request).grid(row=7, column=0)
+        Button(self.add_request_body, text='назад', font=('Arial 14'), width=16, height=3, command=window.destroy).grid(row=7, column=1)
 
-        print(eq.get())
+    def enter_new_request(self):
+        user = self.add_request_body.children.get('user_name').cget('text')
+        data = self.add_request_body.children.get('data_name').cget('text')
+        eq = self.add_request_body.children.get('eq_name').get()
+        ty = self.add_request_body.children.get('ty_name').get()
+        op = self.add_request_body.children.get('op_name').get(1.0, 'end-1c')
+        if eq and ty and op:
+            mydb.insert_request(data, eq, ty, op, user)
+            self.window.destroy()
+
+    def my_request(self):
+        self.clear_main()
+
+        user_name = self.add_request_body.children.get('user_name').cget('text')
+
+        columns = ("номер", "дата", )
         
         
 

@@ -94,6 +94,16 @@ def equipment_and_type_serch():
 
     return equipment, type
 
+def insert_request(data_time, equipment_id, type_id, dadescriptionta_time, user_name):
+    cursor.execute(f""" INSERT INTO Request(datatime, equipment_id, type_id, description, user_name)
+        VALUES('{data_time}', '{equipment_id}','{type_id}','{dadescriptionta_time}','{user_name}')
+    """)
+    data_base.commit()
+
+def my_request(user):
+    x = cursor.execute(f""" SELECT * from Request WHERE user_name="{user}"
+    """).fetchall()
+    return x
     
 
     
